@@ -1,5 +1,15 @@
 # DirectoryBlue
 
+An Angular application with Azure SQL integration for managing provider information and outreach details.
+
+## Features
+
+- Angular 20.3.10 application
+- Azure SQL Database integration
+- Mock backend server for development
+- Provider information management
+- Outreach details tracking
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.10.
 
 ## Development server
