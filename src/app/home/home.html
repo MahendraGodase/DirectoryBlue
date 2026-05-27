@@ -1,0 +1,218 @@
+<div class="home-container">
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    Hello, Mahendra Ramesh Godase!
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="content-wrapper">
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <button class="tab-button active">Search Inventory</button>
+      <button class="tab-button">Import File Management</button>
+      <button class="tab-button">My Inventory</button>
+      <button class="tab-button">Survey Unassigned Inventory</button>
+      <button class="tab-button">CAQH Unassigned Inventory</button>
+    </div>
+
+    <!-- Search Parameters Section -->
+    <div class="search-section">
+      <h2 class="section-title">Search Parameters</h2>
+      
+      <!-- Loading Indicator -->
+      <div *ngIf="isLoading" class="loading-indicator">
+        <div class="spinner"></div>
+        <p>Searching...</p>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      
+      <div class="search-form">
+        <!-- Row 1 -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="npi">NPI</label>
+            <textarea id="npi" rows="2" [(ngModel)]="searchParams.npi" placeholder="Enter NPI numbers"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="dataSource">Data Source</label>
+            <select id="dataSource" [(ngModel)]="searchParams.dataSource">
+              <option value="">--select--</option>
+              <option *ngFor="let option of dataSourceOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="taskId">Task ID</label>
+            <textarea id="taskId" rows="2" [(ngModel)]="searchParams.taskId" placeholder="Enter Task IDs"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="outboundFrom">Outbound File From Date</label>
+            <input type="date" id="outboundFrom" [(ngModel)]="searchParams.outboundFileFromDate">
+          </div>
+          <div class="form-group">
+            <label for="outboundTo">Outbound File To Date</label>
+            <input type="date" id="outboundTo" [(ngModel)]="searchParams.outboundFileToDate">
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="searchBy">Search By</label>
+            <select id="searchBy" [(ngModel)]="searchParams.searchBy">
+              <option value="task">Task</option>
+              <option value="provider">Provider</option>
+              <option value="case">Case</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="surveyType">Survey Type</label>
+            <select id="surveyType" [(ngModel)]="searchParams.surveyType">
+              <option value="">--select--</option>
+              <option *ngFor="let option of surveyTypeOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="providerId">Provider ID</label>
+            <textarea id="providerId" rows="2" [(ngModel)]="searchParams.providerId" placeholder="Enter Provider IDs"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="corpReceiptFrom">Corporate Receipt From Date</label>
+            <input type="date" id="corpReceiptFrom" [(ngModel)]="searchParams.corporateReceiptFromDate">
+          </div>
+          <div class="form-group">
+            <label for="corpReceiptTo">Corporate Receipt To Date</label>
+            <input type="date" id="corpReceiptTo" [(ngModel)]="searchParams.corporateReceiptToDate">
+          </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="taskName">Task Name</label>
+            <select id="taskName" [(ngModel)]="searchParams.taskName">
+              <option value="">--select--</option>
+              <option *ngFor="let option of taskNameOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="taskStatus">Task Status</label>
+            <select id="taskStatus" [(ngModel)]="searchParams.taskStatus">
+              <option value="">--select--</option>
+              <option *ngFor="let option of taskStatusOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="assignedTo">Assigned To</label>
+            <select id="assignedTo" [(ngModel)]="searchParams.assignedTo">
+              <option value="">--select--</option>
+              <option *ngFor="let option of assignedToOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="workQueue">Work Queue</label>
+            <select id="workQueue" [(ngModel)]="searchParams.workQueue">
+              <option value="">--select--</option>
+              <option *ngFor="let option of workQueueOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Advanced Search -->
+        <div class="advanced-search">
+          <button class="btn-advanced" (click)="toggleAdvancedSearch()">+ Advanced Search</button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button class="btn-secondary" (click)="clearFilter()">Clear Filter</button>
+          <button class="btn-primary" (click)="onSubmit()" [disabled]="isLoading">
+            {{ isLoading ? 'Searching...' : 'Submit' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Bulk Update Section -->
+    <div class="bulk-update-section">
+      <div class="bulk-header">
+        <span class="bulk-title">Task Bulk Update ({{ selectedTasks.length }} selected)</span>
+        <button class="btn-bulk" (click)="bulkUpdate()" [disabled]="selectedTasks.length === 0">
+          Bulk Update
+        </button>
+        <button class="btn-export" (click)="exportToExcel()" [disabled]="taskData.length === 0">
+          Export To Excel
+        </button>
+      </div>
+
+      <!-- Data Table -->
+      <div class="data-table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>
+                <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()">
+              </th>
+              <th>Data Source <span class="sort-icon">▼</span></th>
+              <th>Task ID <span class="sort-icon">▼</span></th>
+              <th>Case ID <span class="sort-icon">▼</span></th>
+              <th>NPI <span class="sort-icon">▼</span></th>
+              <th>Provider ID <span class="sort-icon">▼</span></th>
+              <th>Provider Name <span class="sort-icon">▼</span></th>
+              <th>Title <span class="sort-icon">▼</span></th>
+              <th>Task Name <span class="sort-icon">▼</span></th>
+              <th>Task Status <span class="sort-icon">▼</span></th>
+              <th>Task Age <span class="sort-icon">▼</span></th>
+              <th>CRD <span class="sort-icon">▼</span></th>
+              <th>Work Queue <span class="sort-icon">▼</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- No Data Message -->
+            <tr *ngIf="taskData.length === 0 && !isLoading">
+              <td colspan="13" class="no-data">{{ noDataMessage }}</td>
+            </tr>
+            
+            <!-- Data Rows -->
+            <tr *ngFor="let task of taskData" [class.selected]="task.selected">
+              <td>
+                <input type="checkbox" [(ngModel)]="task.selected" (change)="updateSelectedTasks()">
+              </td>
+              <td>{{ task.dataSource }}</td>
+              <td>{{ task.taskId }}</td>
+              <td>{{ task.caseId }}</td>
+              <td>{{ task.npi }}</td>
+              <td>{{ task.providerId }}</td>
+              <td>{{ task.providerName }}</td>
+              <td>{{ task.title }}</td>
+              <td>{{ task.taskName }}</td>
+              <td>
+                <span class="status-badge" [class]="'status-' + task.taskStatus.toLowerCase().replace(' ', '-')">
+                  {{ task.taskStatus }}
+                </span>
+              </td>
+              <td>{{ task.taskAge }} days</td>
+              <td>{{ task.crd }}</td>
+              <td>{{ task.workQueue }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

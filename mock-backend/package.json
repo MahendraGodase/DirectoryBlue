@@ -1,0 +1,32 @@
+{
+  "name": "azure-sql-backend-server",
+  "version": "1.0.0",
+  "description": "Azure SQL backend server for web app",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start-azure": "node azure-server.js",
+    "dev": "nodemon server.js",
+    "dev-azure": "nodemon azure-server.js"
+  },
+  "keywords": [
+    "azure",
+    "sql",
+    "backend",
+    "express",
+    "api"
+  ],
+  "author": "Bob",
+  "license": "MIT",
+  "dependencies": {
+    "@azure/identity": "^4.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jira-client": "^8.2.2",
+    "mssql": "^10.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
