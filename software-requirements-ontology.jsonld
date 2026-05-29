@@ -1,0 +1,484 @@
+{
+  "@context": {
+    "@vocab": "http://example.org/requirements#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "foaf": "http://xmlns.com/foaf/0.1/"
+  },
+  "@graph": [
+    {
+      "@id": "http://example.org/requirements",
+      "@type": "owl:Ontology",
+      "dcterms:title": "Software Requirements Ontology",
+      "dcterms:description": "An ontology for modeling software requirements, stakeholders, goals, use cases, and test cases with their relationships",
+      "dcterms:created": "2026-05-27",
+      "dcterms:creator": "Requirements Engineering Team",
+      "owl:versionInfo": "1.0.0"
+    },
+    {
+      "@id": "Requirement",
+      "@type": "owl:Class",
+      "rdfs:label": "Requirement",
+      "rdfs:comment": "A documented need or expectation for a software system"
+    },
+    {
+      "@id": "FunctionalRequirement",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "Requirement",
+      "rdfs:label": "Functional Requirement",
+      "rdfs:comment": "A requirement that specifies a function that a system must perform"
+    },
+    {
+      "@id": "NonFunctionalRequirement",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "Requirement",
+      "rdfs:label": "Non-Functional Requirement",
+      "rdfs:comment": "A requirement that specifies criteria for system operation rather than specific behaviors"
+    },
+    {
+      "@id": "SecurityRequirement",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "NonFunctionalRequirement",
+      "rdfs:label": "Security Requirement",
+      "rdfs:comment": "A requirement that specifies security constraints and protections"
+    },
+    {
+      "@id": "PerformanceRequirement",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "NonFunctionalRequirement",
+      "rdfs:label": "Performance Requirement",
+      "rdfs:comment": "A requirement that specifies performance metrics and constraints"
+    },
+    {
+      "@id": "UsabilityRequirement",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "NonFunctionalRequirement",
+      "rdfs:label": "Usability Requirement",
+      "rdfs:comment": "A requirement that specifies user experience and ease of use"
+    },
+    {
+      "@id": "ReliabilityRequirement",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "NonFunctionalRequirement",
+      "rdfs:label": "Reliability Requirement",
+      "rdfs:comment": "A requirement that specifies system reliability and availability"
+    },
+    {
+      "@id": "Stakeholder",
+      "@type": "owl:Class",
+      "rdfs:label": "Stakeholder",
+      "rdfs:comment": "An individual or organization with interest in the system"
+    },
+    {
+      "@id": "Developer",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "Stakeholder",
+      "rdfs:label": "Developer",
+      "rdfs:comment": "A stakeholder responsible for implementing the system"
+    },
+    {
+      "@id": "EndUser",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "Stakeholder",
+      "rdfs:label": "End User",
+      "rdfs:comment": "A stakeholder who will use the system"
+    },
+    {
+      "@id": "ProductOwner",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "Stakeholder",
+      "rdfs:label": "Product Owner",
+      "rdfs:comment": "A stakeholder responsible for product vision and priorities"
+    },
+    {
+      "@id": "QualityAssurance",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "Stakeholder",
+      "rdfs:label": "Quality Assurance",
+      "rdfs:comment": "A stakeholder responsible for testing and quality"
+    },
+    {
+      "@id": "Goal",
+      "@type": "owl:Class",
+      "rdfs:label": "Goal",
+      "rdfs:comment": "A high-level objective that the system should achieve"
+    },
+    {
+      "@id": "BusinessGoal",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "Goal",
+      "rdfs:label": "Business Goal",
+      "rdfs:comment": "A goal related to business objectives"
+    },
+    {
+      "@id": "UserGoal",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "Goal",
+      "rdfs:label": "User Goal",
+      "rdfs:comment": "A goal related to user needs and satisfaction"
+    },
+    {
+      "@id": "TechnicalGoal",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "Goal",
+      "rdfs:label": "Technical Goal",
+      "rdfs:comment": "A goal related to technical architecture and implementation"
+    },
+    {
+      "@id": "UseCase",
+      "@type": "owl:Class",
+      "rdfs:label": "Use Case",
+      "rdfs:comment": "A description of how a user interacts with the system to achieve a goal"
+    },
+    {
+      "@id": "TestCase",
+      "@type": "owl:Class",
+      "rdfs:label": "Test Case",
+      "rdfs:comment": "A set of conditions to verify a requirement"
+    },
+    {
+      "@id": "UnitTest",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "TestCase",
+      "rdfs:label": "Unit Test",
+      "rdfs:comment": "A test case for individual components"
+    },
+    {
+      "@id": "IntegrationTest",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "TestCase",
+      "rdfs:label": "Integration Test",
+      "rdfs:comment": "A test case for component interactions"
+    },
+    {
+      "@id": "AcceptanceTest",
+      "@type": "owl:Class",
+      "rdfs:subClassOf": "TestCase",
+      "rdfs:label": "Acceptance Test",
+      "rdfs:comment": "A test case for requirement validation"
+    },
+    {
+      "@id": "requirementId",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "requirement ID",
+      "rdfs:comment": "Unique identifier for a requirement",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "title",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "title",
+      "rdfs:comment": "Title or name of the entity",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "description",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "description",
+      "rdfs:comment": "Detailed description of the entity",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "priority",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "priority",
+      "rdfs:comment": "Priority level (e.g., High, Medium, Low)",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "status",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "status",
+      "rdfs:comment": "Current status (e.g., Draft, Approved, Implemented, Verified)",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "createdDate",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "created date",
+      "rdfs:comment": "Date when the entity was created",
+      "rdfs:range": "xsd:dateTime"
+    },
+    {
+      "@id": "modifiedDate",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "modified date",
+      "rdfs:comment": "Date when the entity was last modified",
+      "rdfs:range": "xsd:dateTime"
+    },
+    {
+      "@id": "version",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "version",
+      "rdfs:comment": "Version number of the entity",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "rationale",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "rationale",
+      "rdfs:comment": "Justification or reasoning for the requirement",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "acceptanceCriteria",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "acceptance criteria",
+      "rdfs:comment": "Criteria that must be met for the requirement to be accepted",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "performanceMetric",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "performance metric",
+      "rdfs:comment": "Measurable performance indicator",
+      "rdfs:domain": "PerformanceRequirement",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "targetValue",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "target value",
+      "rdfs:comment": "Target value for a performance metric",
+      "rdfs:domain": "PerformanceRequirement",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "securityLevel",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "security level",
+      "rdfs:comment": "Required security classification level",
+      "rdfs:domain": "SecurityRequirement",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "testResult",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "test result",
+      "rdfs:comment": "Result of test execution (e.g., Pass, Fail, Pending)",
+      "rdfs:domain": "TestCase",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "testSteps",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "test steps",
+      "rdfs:comment": "Steps to execute the test case",
+      "rdfs:domain": "TestCase",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "expectedResult",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "expected result",
+      "rdfs:comment": "Expected outcome of the test case",
+      "rdfs:domain": "TestCase",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "precondition",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "precondition",
+      "rdfs:comment": "Conditions that must be true before execution",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "postcondition",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "postcondition",
+      "rdfs:comment": "Conditions that must be true after execution",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "actor",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "actor",
+      "rdfs:comment": "The role or entity that initiates the use case",
+      "rdfs:domain": "UseCase",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "mainFlow",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "main flow",
+      "rdfs:comment": "Primary sequence of steps in the use case",
+      "rdfs:domain": "UseCase",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "alternativeFlow",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:label": "alternative flow",
+      "rdfs:comment": "Alternative sequence of steps in the use case",
+      "rdfs:domain": "UseCase",
+      "rdfs:range": "xsd:string"
+    },
+    {
+      "@id": "dependsOn",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "depends on",
+      "rdfs:comment": "Indicates that one requirement depends on another",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "Requirement"
+    },
+    {
+      "@id": "conflictsWith",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "conflicts with",
+      "rdfs:comment": "Indicates that one requirement conflicts with another",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "Requirement",
+      "owl:propertyType": "owl:SymmetricProperty"
+    },
+    {
+      "@id": "refines",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "refines",
+      "rdfs:comment": "Indicates that one requirement refines or elaborates another",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "Requirement"
+    },
+    {
+      "@id": "derivedFrom",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "derived from",
+      "rdfs:comment": "Indicates that a requirement is derived from another source",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": ["Requirement", "Goal", "UseCase"]
+    },
+    {
+      "@id": "verifiedBy",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "verified by",
+      "rdfs:comment": "Links a requirement to test cases that verify it",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "TestCase"
+    },
+    {
+      "@id": "verifies",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "verifies",
+      "rdfs:comment": "Links a test case to requirements it verifies",
+      "rdfs:domain": "TestCase",
+      "rdfs:range": "Requirement",
+      "owl:inverseOf": "verifiedBy"
+    },
+    {
+      "@id": "satisfies",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "satisfies",
+      "rdfs:comment": "Indicates that a requirement satisfies a goal",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "Goal"
+    },
+    {
+      "@id": "satisfiedBy",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "satisfied by",
+      "rdfs:comment": "Indicates that a goal is satisfied by requirements",
+      "rdfs:domain": "Goal",
+      "rdfs:range": "Requirement",
+      "owl:inverseOf": "satisfies"
+    },
+    {
+      "@id": "hasStakeholder",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "has stakeholder",
+      "rdfs:comment": "Links an entity to its stakeholders",
+      "rdfs:range": "Stakeholder"
+    },
+    {
+      "@id": "proposedBy",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "proposed by",
+      "rdfs:comment": "Indicates who proposed the requirement",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "Stakeholder"
+    },
+    {
+      "@id": "approvedBy",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "approved by",
+      "rdfs:comment": "Indicates who approved the requirement",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "Stakeholder"
+    },
+    {
+      "@id": "assignedTo",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "assigned to",
+      "rdfs:comment": "Indicates who is responsible for implementing or testing",
+      "rdfs:range": "Stakeholder"
+    },
+    {
+      "@id": "realizesUseCase",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "realizes use case",
+      "rdfs:comment": "Links a requirement to use cases it realizes",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "UseCase"
+    },
+    {
+      "@id": "realizedBy",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "realized by",
+      "rdfs:comment": "Links a use case to requirements that realize it",
+      "rdfs:domain": "UseCase",
+      "rdfs:range": "Requirement",
+      "owl:inverseOf": "realizesUseCase"
+    },
+    {
+      "@id": "includes",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "includes",
+      "rdfs:comment": "Indicates that one use case includes another",
+      "rdfs:domain": "UseCase",
+      "rdfs:range": "UseCase"
+    },
+    {
+      "@id": "extends",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "extends",
+      "rdfs:comment": "Indicates that one use case extends another",
+      "rdfs:domain": "UseCase",
+      "rdfs:range": "UseCase"
+    },
+    {
+      "@id": "traces",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "traces",
+      "rdfs:comment": "General traceability relationship between entities",
+      "rdfs:comment": "Provides bidirectional traceability across the requirements lifecycle"
+    },
+    {
+      "@id": "impacts",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "impacts",
+      "rdfs:comment": "Indicates that changes to one requirement may impact another",
+      "rdfs:domain": "Requirement",
+      "rdfs:range": "Requirement"
+    },
+    {
+      "@id": "mitigates",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "mitigates",
+      "rdfs:comment": "Indicates that a requirement mitigates a risk or security concern",
+      "rdfs:domain": "Requirement"
+    },
+    {
+      "@id": "validates",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "validates",
+      "rdfs:comment": "Indicates validation relationship between test and requirement",
+      "rdfs:domain": "TestCase",
+      "rdfs:range": "Requirement"
+    }
+  ]
+}

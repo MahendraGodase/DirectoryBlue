@@ -1,11 +1,17 @@
 const express = require('express');
 const cors = require('cors');
+const mcpService = require('./mcp-service');
 const app = express();
 const PORT = 3000;
+
+// Configuration: Toggle between Mock and MCP data source
+const USE_MCP = process.env.USE_MCP === 'true' || false;
 
 // Enable CORS for Angular app
 app.use(cors());
 app.use(express.json());
+
+console.log(`🔧 Data Source: ${USE_MCP ? 'MCP Context Studio' : 'Mock Data'}`);
 
 // Mock data
 const mockTasks = [
@@ -121,58 +127,103 @@ const dropdownOptions = {
 };
 
 // Search tasks endpoint
-app.get('/api/search-tasks', (req, res) => {
+app.get('/api/search-tasks', async (req, res) => {
   console.log('Search request received:', req.query);
   
-  let filteredTasks = [...mockTasks];
-  
-  // Filter by NPI
-  if (req.query.npi) {
-    const npis = req.query.npi.split(',').map(n => n.trim());
-    filteredTasks = filteredTasks.filter(task => npis.includes(task.npi));
-  }
-  
-  // Filter by Data Source
-  if (req.query.dataSource) {
-    filteredTasks = filteredTasks.filter(task => task.dataSource === req.query.dataSource);
-  }
-  
-  // Filter by Task ID
-  if (req.query.taskId) {
-    const taskIds = req.query.taskId.split(',').map(t => t.trim());
-    filteredTasks = filteredTasks.filter(task => taskIds.includes(task.taskId));
-  }
-  
-  // Filter by Provider ID
-  if (req.query.providerId) {
-    const providerIds = req.query.providerId.split(',').map(p => p.trim());
-    filteredTasks = filteredTasks.filter(task => providerIds.includes(task.providerId));
-  }
-  
-  // Filter by Task Status
-  if (req.query.taskStatus) {
-    filteredTasks = filteredTasks.filter(task => task.taskStatus === req.query.taskStatus);
-  }
-  
-  // Filter by Task Name
-  if (req.query.taskName) {
-    filteredTasks = filteredTasks.filter(task => task.taskName === req.query.taskName);
-  }
-  
-  // Filter by Work Queue
-  if (req.query.workQueue) {
-    filteredTasks = filteredTasks.filter(task => task.workQueue === req.query.workQueue);
-  }
-  
-  // Simulate delay
-  setTimeout(() => {
-    res.json({
-      success: true,
-      data: filteredTasks,
-      totalRecords: filteredTasks.length,
-      message: 'Search completed successfully'
+  try {
+    if (USE_MCP) {
+      // Use MCP Proxy Server as data source
+      console.log('🔌 Fetching data from MCP Proxy Server...');
+      try {
+        const axios = require('axios');
+        const mcpProxyUrl = 'http://localhost:3001/api/mcp/tasks';
+        
+        // Build query string from search params
+        const queryParams = new URLSearchParams();
+        if (req.query.dataSource) queryParams.append('dataSource', req.query.dataSource);
+        if (req.query.taskStatus) queryParams.append('taskStatus', req.query.taskStatus);
+        if (req.query.workQueue) queryParams.append('workQueue', req.query.workQueue);
+        if (req.query.providerName) queryParams.append('providerName', req.query.providerName);
+        if (req.query.npi) queryParams.append('npi', req.query.npi);
+        if (req.query.taskId) queryParams.append('taskId', req.query.taskId);
+        
+        const url = queryParams.toString() ? `${mcpProxyUrl}?${queryParams}` : mcpProxyUrl;
+        const response = await axios.get(url);
+        
+        if (response.data.success && response.data.data.length > 0) {
+          console.log(`✅ Retrieved ${response.data.data.length} tasks from MCP Proxy`);
+          return res.json(response.data);
+        }
+        
+        console.log('⚠️ MCP Proxy returned no data, falling back to mock data');
+      } catch (error) {
+        console.log(`⚠️ MCP Proxy error: ${error.message}, falling back to mock data`);
+      }
+    }
+    
+    // Use mock data (fallback or when MCP is disabled)
+    {
+      // Use mock data
+      let filteredTasks = [...mockTasks];
+      
+      // Filter by NPI
+      if (req.query.npi) {
+        const npis = req.query.npi.split(',').map(n => n.trim());
+        filteredTasks = filteredTasks.filter(task => npis.includes(task.npi));
+      }
+      
+      // Filter by Data Source
+      if (req.query.dataSource) {
+        filteredTasks = filteredTasks.filter(task => task.dataSource === req.query.dataSource);
+      }
+      
+      // Filter by Task ID
+      if (req.query.taskId) {
+        const taskIds = req.query.taskId.split(',').map(t => t.trim());
+        filteredTasks = filteredTasks.filter(task => taskIds.includes(task.taskId));
+      }
+      
+      // Filter by Provider ID
+      if (req.query.providerId) {
+        const providerIds = req.query.providerId.split(',').map(p => p.trim());
+        filteredTasks = filteredTasks.filter(task => providerIds.includes(task.providerId));
+      }
+      
+      // Filter by Task Status
+      if (req.query.taskStatus) {
+        filteredTasks = filteredTasks.filter(task => task.taskStatus === req.query.taskStatus);
+      }
+      
+      // Filter by Task Name
+      if (req.query.taskName) {
+        filteredTasks = filteredTasks.filter(task => task.taskName === req.query.taskName);
+      }
+      
+      // Filter by Work Queue
+      if (req.query.workQueue) {
+        filteredTasks = filteredTasks.filter(task => task.workQueue === req.query.workQueue);
+      }
+      
+      // Simulate delay
+      setTimeout(() => {
+        res.json({
+          success: true,
+          data: filteredTasks,
+          totalRecords: filteredTasks.length,
+          source: 'Mock Data',
+          message: 'Search completed successfully'
+        });
+      }, 500);
+    }
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({
+      success: false,
+      data: [],
+      totalRecords: 0,
+      message: `Error: ${error.message}`
     });
-  }, 500);
+  }
 });
 
 // Get dropdown options endpoint
