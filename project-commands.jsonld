@@ -1,0 +1,306 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "cmd": "https://directoryblue.example.com/commands#",
+    "git": "https://git-scm.com/docs/",
+    "npm": "https://docs.npmjs.com/cli/",
+    "node": "https://nodejs.org/api/"
+  },
+  "@type": "SoftwareSourceCode",
+  "name": "DirectoryBlue Project Commands",
+  "description": "Complete list of commands used in DirectoryBlue application development with MCP integration",
+  "dateCreated": "2026-05-29",
+  "programmingLanguage": [
+    "JavaScript",
+    "TypeScript",
+    "PowerShell",
+    "Python"
+  ],
+  "runtimePlatform": [
+    "Node.js",
+    "Angular",
+    "Windows 11"
+  ],
+  "commands": [
+    {
+      "@type": "cmd:Command",
+      "name": "Start Angular Frontend",
+      "identifier": "npm-start-frontend",
+      "description": "Starts the Angular development server on port 4200",
+      "command": "npm start",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue",
+      "port": 4200,
+      "category": "Frontend",
+      "purpose": "Run Angular application in development mode"
+    },
+    {
+      "@type": "cmd:Command",
+      "name": "Start Backend Server",
+      "identifier": "npm-start-backend",
+      "description": "Starts the Node.js Express backend server on port 3000",
+      "command": "cd mock-backend && npm start",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue/mock-backend",
+      "port": 3000,
+      "category": "Backend",
+      "purpose": "Run Express API server with mock data endpoints"
+    },
+    {
+      "@type": "cmd:Command",
+      "name": "Start MCP Proxy Server",
+      "identifier": "node-mcp-proxy",
+      "description": "Starts the MCP Proxy Server on port 3001",
+      "command": "cd mock-backend && node mcp-proxy-server.js",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue/mock-backend",
+      "port": 3001,
+      "category": "MCP Integration",
+      "purpose": "Bridge between Bob's MCP tools and the application"
+    },
+    {
+      "@type": "cmd:Command",
+      "name": "Start Backend with MCP",
+      "identifier": "npm-start-backend-mcp",
+      "description": "Starts backend with MCP integration enabled",
+      "command": "Stop-Process -Id (Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue).OwningProcess -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; cd mock-backend; $env:USE_MCP=\"true\"; npm start",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue",
+      "port": 3000,
+      "category": "Backend",
+      "purpose": "Run backend with MCP_USE environment variable enabled",
+      "environmentVariables": {
+        "USE_MCP": "true"
+      }
+    },
+    {
+      "@type": "cmd:Command",
+      "name": "Git Status Check",
+      "identifier": "git-status",
+      "description": "Check current git repository status",
+      "command": "git status",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue",
+      "category": "Version Control",
+      "purpose": "View staged, unstaged, and untracked files"
+    },
+    {
+      "@type": "cmd:Command",
+      "name": "Git Add File",
+      "identifier": "git-add",
+      "description": "Stage file for commit",
+      "command": "git add USER_PROMPTS_HISTORY.md",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue",
+      "category": "Version Control",
+      "purpose": "Add new file to staging area"
+    },
+    {
+      "@type": "cmd:Command",
+      "name": "Git Commit Changes",
+      "identifier": "git-commit-1",
+      "description": "Commit MCP integration and presentations",
+      "command": "git commit -m \"Add MCP integration with proxy architecture, presentations, and complete DirectoryBlue functionality\"",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue",
+      "category": "Version Control",
+      "purpose": "Create commit with 159 files changed",
+      "commitHash": "f321a40",
+      "filesChanged": 159,
+      "insertions": 44548
+    },
+    {
+      "@type": "cmd:Command",
+      "name": "Git Commit Documentation",
+      "identifier": "git-commit-2",
+      "description": "Commit user prompts history",
+      "command": "git commit -m \"Add user prompts history documentation and update presentation\"",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue",
+      "category": "Version Control",
+      "purpose": "Create commit with documentation updates",
+      "commitHash": "cc9cdf6",
+      "filesChanged": 3,
+      "insertions": 126
+    },
+    {
+      "@type": "cmd:Command",
+      "name": "Git Push to Remote",
+      "identifier": "git-push",
+      "description": "Push commits to GitHub repository",
+      "command": "git push origin develop",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue",
+      "category": "Version Control",
+      "purpose": "Upload local commits to remote repository",
+      "repository": "https://github.com/MahendraGodase/DirectoryBlue.git",
+      "branch": "develop"
+    },
+    {
+      "@type": "cmd:Command",
+      "name": "Install Backend Dependencies",
+      "identifier": "npm-install-backend",
+      "description": "Install Node.js dependencies for backend",
+      "command": "cd mock-backend && npm install",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue/mock-backend",
+      "category": "Setup",
+      "purpose": "Install express, cors, axios, and other dependencies"
+    },
+    {
+      "@type": "cmd:Command",
+      "name": "Generate PowerPoint Presentation",
+      "identifier": "python-generate-ppt",
+      "description": "Generate PowerPoint presentation using Python",
+      "command": "python create_mcp_presentation.py",
+      "workingDirectory": "c:/BOB Directory/DirectoryBlue",
+      "category": "Documentation",
+      "purpose": "Create 30-slide comprehensive presentation"
+    }
+  ],
+  "serverConfiguration": {
+    "@type": "WebApplication",
+    "name": "DirectoryBlue Application",
+    "servers": [
+      {
+        "@type": "WebServer",
+        "name": "Angular Frontend",
+        "url": "http://localhost:4200",
+        "port": 4200,
+        "technology": "Angular 19",
+        "purpose": "User interface for provider search and task management"
+      },
+      {
+        "@type": "WebServer",
+        "name": "Express Backend",
+        "url": "http://localhost:3000",
+        "port": 3000,
+        "technology": "Node.js + Express",
+        "purpose": "REST API for data operations and business logic"
+      },
+      {
+        "@type": "WebServer",
+        "name": "MCP Proxy Server",
+        "url": "http://localhost:3001",
+        "port": 3001,
+        "technology": "Node.js + Express",
+        "purpose": "Bridge between Bob's MCP tools and application"
+      }
+    ]
+  },
+  "mcpIntegration": {
+    "@type": "SoftwareApplication",
+    "name": "MCP Context Studio Integration",
+    "description": "Integration with IBM's Model Context Protocol for data retrieval",
+    "components": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "MCP Context Studio",
+        "description": "IBM's data storage and retrieval system",
+        "contextId": "ctx_4c0bbed92300",
+        "dataSource": "Invetory.csv",
+        "nodesExtracted": 48,
+        "relationshipsExtracted": 181,
+        "tasksLoaded": 14
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Bob AI Assistant",
+        "description": "Acts as MCP gateway for authentication and data transformation",
+        "role": "MCP Tool Executor",
+        "capabilities": [
+          "Query MCP Context Studio",
+          "Transform graph data to application format",
+          "Push data to MCP Proxy Server"
+        ]
+      }
+    ]
+  },
+  "apiEndpoints": [
+    {
+      "@type": "WebAPI",
+      "name": "Search Providers",
+      "url": "http://localhost:3000/api/search",
+      "httpMethod": "POST",
+      "description": "Search for providers based on criteria"
+    },
+    {
+      "@type": "WebAPI",
+      "name": "Get Dropdown Options",
+      "url": "http://localhost:3000/api/dropdown-options",
+      "httpMethod": "GET",
+      "description": "Retrieve dropdown options for filters"
+    },
+    {
+      "@type": "WebAPI",
+      "name": "Push MCP Data",
+      "url": "http://localhost:3001/api/mcp/push-data",
+      "httpMethod": "POST",
+      "description": "Bob pushes MCP data to proxy server"
+    },
+    {
+      "@type": "WebAPI",
+      "name": "Fetch MCP Tasks",
+      "url": "http://localhost:3001/api/mcp/tasks",
+      "httpMethod": "GET",
+      "description": "Application fetches tasks from MCP proxy"
+    }
+  ],
+  "keyFiles": [
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "MCP Proxy Server",
+      "codeRepository": "mock-backend/mcp-proxy-server.js",
+      "description": "Bridge server between Bob's MCP tools and application",
+      "programmingLanguage": "JavaScript"
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "Main Backend Server",
+      "codeRepository": "mock-backend/server.js",
+      "description": "Express API server with MCP integration",
+      "programmingLanguage": "JavaScript"
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "MCP Configuration",
+      "codeRepository": ".bob/mcp.json",
+      "description": "Bob's MCP server configuration",
+      "programmingLanguage": "JSON"
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "Complete Presentation",
+      "codeRepository": "DirectoryBlue_Complete_Presentation.pptx",
+      "description": "30-slide comprehensive PowerPoint presentation",
+      "fileFormat": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "User Prompts History",
+      "codeRepository": "USER_PROMPTS_HISTORY.md",
+      "description": "Complete list of user prompts and actions taken",
+      "fileFormat": "text/markdown"
+    }
+  ],
+  "dependencies": {
+    "frontend": [
+      "@angular/core",
+      "@angular/common",
+      "@angular/router",
+      "@angular/forms",
+      "rxjs"
+    ],
+    "backend": [
+      "express",
+      "cors",
+      "axios",
+      "body-parser",
+      "dotenv"
+    ],
+    "documentation": [
+      "python-pptx"
+    ]
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Mahendra Godase",
+    "email": "mahendra.godase@ibm.com"
+  },
+  "codeRepository": {
+    "@type": "SoftwareSourceCode",
+    "url": "https://github.com/MahendraGodase/DirectoryBlue.git",
+    "branch": "develop",
+    "lastCommit": "cc9cdf6"
+  }
+}
