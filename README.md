@@ -1,11 +1,44 @@
 # DirectoryBlue
 
+[![CI Pipeline](https://github.com/MahendraGodase/DirectoryBlue/actions/workflows/ci.yml/badge.svg)](https://github.com/MahendraGodase/DirectoryBlue/actions/workflows/ci.yml)
+[![CD Pipeline](https://github.com/MahendraGodase/DirectoryBlue/actions/workflows/cd.yml/badge.svg)](https://github.com/MahendraGodase/DirectoryBlue/actions/workflows/cd.yml)
+
 An Angular application with Azure SQL integration for managing provider information and outreach details.
 
 ## Features
 
 - Angular 20.3.10 application
 - Azure SQL Database integration
+## CI/CD Pipeline
+
+This project includes automated CI/CD pipelines using GitHub Actions:
+
+### Continuous Integration (CI)
+- **Automated Testing**: Runs on every push and pull request to `main` and `develop` branches
+- **Multi-Node Testing**: Tests against Node.js versions 18.x and 20.x
+- **Build Verification**: Ensures the application builds successfully
+- **Code Quality Checks**: TypeScript compilation, formatting, and linting
+- **Security Scanning**: npm audit for vulnerability detection
+
+### Continuous Deployment (CD)
+- **GitHub Pages**: Automatic deployment to GitHub Pages on push to `main` branch
+- **Azure Support**: Ready for Azure Web App deployment (configure secrets to enable)
+- **Automated Releases**: Creates GitHub releases with version tags
+- **Manual Deployment**: Supports manual workflow dispatch
+
+### Setup Instructions
+
+#### For GitHub Pages Deployment:
+1. Go to repository Settings → Pages
+2. Set Source to "GitHub Actions"
+3. The CD pipeline will automatically deploy on push to main
+
+#### For Azure Deployment:
+1. Enable Azure deployment by setting `if: false` to `if: true` in `.github/workflows/cd.yml`
+2. Add the following secrets to your repository:
+   - `AZURE_WEBAPP_NAME`: Your Azure Web App name
+   - `AZURE_WEBAPP_PUBLISH_PROFILE`: Download from Azure Portal
+
 - Mock backend server for development
 - Provider information management
 - Outreach details tracking
