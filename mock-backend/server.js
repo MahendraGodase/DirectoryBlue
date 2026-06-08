@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const JiraIntegration = require('./jira-integration');
+const jiraService = require('./jira-service');
 const mcpService = require('./mcp-service');
 const app = express();
 const PORT = 3000;
@@ -248,6 +250,236 @@ app.post('/api/bulk-update', (req, res) => {
       success: true,
       message: `Successfully updated ${taskIds.length} tasks`,
       updatedCount: taskIds.length
+
+// ============================================
+// JIRA INTEGRATION ENDPOINTS
+// ============================================
+
+// Initialize Jira Integration
+const jiraIntegration = new JiraIntegration();
+
+// Test Jira connection
+app.get('/api/jira/test', async (req, res) => {
+  try {
+    console.log('🔌 Testing Jira connection...');
+    const result = await jiraIntegration.testConnection();
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Jira connection test failed:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Get PROVINFO-2 issue details
+app.get('/api/jira/issue/:issueKey?', async (req, res) => {
+  try {
+    const issueKey = req.params.issueKey || process.env.JIRA_CURRENT_ISSUE;
+    console.log(`📋 Fetching Jira issue: ${issueKey}...`);
+    const result = await jiraService.getIssue(issueKey);
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error fetching Jira issue:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Get current issue (PROVINFO-2) details
+app.get('/api/jira/current-issue', async (req, res) => {
+  try {
+    console.log('📋 Fetching current Jira issue...');
+    const result = await jiraIntegration.fetchCurrentIssue();
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error fetching current issue:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Get comprehensive issue report
+app.get('/api/jira/report', async (req, res) => {
+  try {
+    console.log('📊 Generating Jira issue report...');
+    const result = await jiraIntegration.getIssueReport();
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error generating report:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Get available transitions for an issue
+app.get('/api/jira/transitions/:issueKey?', async (req, res) => {
+  try {
+    const issueKey = req.params.issueKey || process.env.JIRA_CURRENT_ISSUE;
+    console.log(`🔀 Fetching transitions for ${issueKey}...`);
+    const result = await jiraService.getTransitions(issueKey);
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error fetching transitions:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Add comment to Jira issue
+app.post('/api/jira/comment/:issueKey?', async (req, res) => {
+  try {
+    const issueKey = req.params.issueKey || process.env.JIRA_CURRENT_ISSUE;
+    const { comment } = req.body;
+    
+    if (!comment) {
+      return res.status(400).json({
+        success: false,
+        message: 'Comment text is required'
+      });
+    }
+    
+    console.log(`💬 Adding comment to ${issueKey}...`);
+    const result = await jiraService.addComment(issueKey, comment);
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error adding comment:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Update Jira issue status
+app.post('/api/jira/status/:issueKey?', async (req, res) => {
+  try {
+    const issueKey = req.params.issueKey || process.env.JIRA_CURRENT_ISSUE;
+    const { status } = req.body;
+    
+    if (!status) {
+      return res.status(400).json({
+        success: false,
+        message: 'Status is required'
+      });
+    }
+    
+    console.log(`🔄 Updating ${issueKey} status to: ${status}...`);
+    const result = await jiraService.updateIssueStatus(issueKey, status);
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error updating status:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Search PROVINFO project issues
+app.get('/api/jira/search', async (req, res) => {
+  try {
+    const maxResults = parseInt(req.query.maxResults) || 20;
+    console.log(`🔍 Searching PROVINFO issues (max: ${maxResults})...`);
+    const result = await jiraIntegration.searchProjectIssues(maxResults);
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error searching issues:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Link a task to Jira issue
+app.post('/api/jira/link-task', async (req, res) => {
+  try {
+    const taskData = req.body;
+    
+    if (!taskData.taskId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Task data with taskId is required'
+      });
+    }
+    
+    console.log(`🔗 Linking task ${taskData.taskId} to Jira...`);
+    const result = await jiraIntegration.linkTaskToIssue(taskData);
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error linking task:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Sync task with Jira issue
+app.post('/api/jira/sync-task/:taskId', async (req, res) => {
+  try {
+    const taskId = req.params.taskId;
+    console.log(`🔄 Syncing task ${taskId} with Jira...`);
+    const result = await jiraIntegration.syncTaskWithIssue(taskId);
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error syncing task:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Create new Jira issue from task
+app.post('/api/jira/create-issue', async (req, res) => {
+  try {
+    const taskData = req.body;
+    
+    if (!taskData.taskName || !taskData.providerName) {
+      return res.status(400).json({
+        success: false,
+        message: 'Task name and provider name are required'
+      });
+    }
+    
+    console.log(`📝 Creating Jira issue for task: ${taskData.taskName}...`);
+    const result = await jiraService.createIssue(taskData);
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error creating Jira issue:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Get all PROVINFO projects
+app.get('/api/jira/projects', async (req, res) => {
+  try {
+    console.log('📁 Fetching Jira projects...');
+    const result = await jiraService.getProjects();
+    res.json(result);
+  } catch (error) {
+    console.error('❌ Error fetching projects:', error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
     });
   }, 800);
 });
