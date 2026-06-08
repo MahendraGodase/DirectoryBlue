@@ -1,4 +1,4 @@
-# DirectoryBlue
+# Directory Blue
 
 [![CI Pipeline](https://github.com/MahendraGodase/DirectoryBlue/actions/workflows/ci.yml/badge.svg)](https://github.com/MahendraGodase/DirectoryBlue/actions/workflows/ci.yml)
 [![CD Pipeline](https://github.com/MahendraGodase/DirectoryBlue/actions/workflows/cd.yml/badge.svg)](https://github.com/MahendraGodase/DirectoryBlue/actions/workflows/cd.yml)
